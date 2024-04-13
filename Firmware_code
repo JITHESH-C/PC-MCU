@@ -4,33 +4,31 @@ unsigned long startTime = 0;
 unsigned long bytesSent = 0;
 
 void setup() {
-  Serial.begin(2600); // Initialize serial communication with baud rate 2600
-  startTime = millis(); // Record start time
+  Serial.begin(2400); 
+  startTime = millis(); 
 }
 
 void loop() {
-  if (Serial.available() > 0) { // Check if data is available from PC
-    char data = Serial.read(); // Read the incoming byte
-    int address = EEPROM.read(0); // Read the address from EEPROM
-    EEPROM.write(address, data); // Write data to EEPROM
-    EEPROM.write(0, address + 1); // Increment address for next data
-    bytesSent++; // Increment byte count
+  if (Serial.available() > 0) 
+{
+    char data = Serial.read(); 
+    int address = EEPROM.read(0);
+    EEPROM.write(address, data); 
+    EEPROM.write(0, address + 1);
+    bytesSent++; 
   }
   
-  // Send data back to PC
-  int address = EEPROM.read(0); // Read address
-  char data = EEPROM.read(address); // Read data from EEPROM
-  Serial.write(data); // Send data to PC
+  int address = EEPROM.read(0); 
+  char data = EEPROM.read(address); 
+  Serial.write(data);
 
-  // Calculate and print real-time data speed
   unsigned long currentTime = millis();
   unsigned long elapsedTime = currentTime - startTime;
-  float dataSpeed = ((float)bytesSent * 8) / (elapsedTime / 1000.0); // Calculate bits per second
+  float dataSpeed = ((float)bytesSent * 8) / (elapsedTime / 1000.0);
   Serial.print("Real-time data speed: ");
   Serial.print(dataSpeed);
   Serial.println(" bits/sec");
 
-  // If 1000 characters have been sent, reset byte count and start time
   if (bytesSent == 1000) {
     bytesSent = 0;
     startTime = millis();
